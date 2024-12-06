@@ -21,9 +21,9 @@ This small React app demonstrates how to send and sign transactions with a demo 
    Create a `.env` file in the project root and add the following variables:
 
    ```plaintext
-   REACT_APP_WALLET_ADDRESS=0x00015b3f8b4ee70193cd13acdc099e46562c8011
+   REACT_APP_WALLET_ADDRESS=0x00012ca7340e6c09e16fe4ac041d5742b3aa40bc
    REACT_APP_PRIVATE_KEY=0xbe18c62bc86ea56f38aaffa0a3a532e99e904fa7a1fbcbac294b95a59cf13f37
-   REACT_APP_CONTRACT_ADDRESS=0x00015b3f8b4ee70193cd13acdc099e46562c8011
+   REACT_APP_CONTRACT_ADDRESS=0x0001eea4a881eacdc03263a3f6f02cd3b7932c72
    ```
 
    Additionally, set your own RPC endpoint and the extension ID when deploying the extension locally:

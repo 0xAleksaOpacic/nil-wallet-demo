@@ -1,42 +1,94 @@
 /*global chrome*/
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import { encodeFunctionData } from "viem";
-
+import React, { useEffect, useState } from "react";
 // Import ABI from the artifacts
 import CounterABI from "./artifacts/Counter.json";
 import { createClient } from "./util/client";
+import { encodeFunctionData } from "viem";
+
+
+// EIP-6963 Event Name Constants
+const EIP6963EventNames = {
+    Request: "eip6963:requestProvider",
+    Announce: "eip6963:announceProvider",
+};
 
 function App() {
-    const [logs, setLogs] = useState([]);
-    const [port, setPort] = useState(null);
-    const [value, setValue] = useState(-1);
-
-    const extensionId = process.env.REACT_APP_EXTENSION_ID;
+    const [provider, setProvider] = useState(null);
+    const [value, setValue] = useState(0);
+    const [responseLog, setResponseLog] = useState([]);
     const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
-    const addLog = (log) => {
-        setLogs((prevLogs) => [...prevLogs, log]);
-    };
-
     useEffect(() => {
-        console.log(process.env)
-        const connectionPort = chrome.runtime.connect(extensionId, { name: "signAndSend" });
-        setPort(connectionPort);
+        const handleProviderAnnounce = (event) => {
+            if (event.detail?.info?.uuid !== "439e2267-7284-40f2-85d3-0393cffc161c") {
+                console.error("Wrong extension:", event.detail.info.name);
+                return;
+            }
 
-        connectionPort.onMessage.addListener((msg) => {
-            addLog(`Message from extension via port: ${JSON.stringify(msg)}`);
-        });
+            const { provider } = event.detail;
+            if (!provider) {
+                console.error("No provider received in announce event");
+                return;
+            }
 
-        connectionPort.onDisconnect.addListener(() => {
-            addLog("Port disconnected");
-            setPort(null);
-        });
+            setProvider(provider);
+        };
+
+        window.addEventListener(EIP6963EventNames.Announce, handleProviderAnnounce);
 
         return () => {
-            connectionPort.disconnect();
+            window.removeEventListener(EIP6963EventNames.Announce, handleProviderAnnounce);
         };
-    }, [extensionId]);
+    }, []);
+
+    useEffect(() => {
+        window.dispatchEvent(
+            new CustomEvent(EIP6963EventNames.Request, {
+                detail: {
+                    name: "Sample Wallet Request",
+                },
+            })
+        );
+    }, []);
+
+    useEffect(() => {
+        getValue()
+    }, []);
+
+    const sendRequest = async () => {
+        if (!provider || !provider.request) {
+            console.error("Provider is not available or doesn't support request method");
+            return;
+        }
+
+        // Encode calldata for the "increment" function
+        const calldata = encodeFunctionData({
+            abi: CounterABI.abi,
+            functionName: "increment",
+            args: [],
+        });
+
+        // Prepare transaction parameters
+        const transactionParams = {
+            to: contractAddress,  // Replace with your actual contract address
+            value: "0x0",        // Value in hexadecimal format (0 ETH)
+            data: calldata,      // Encoded function call data
+        };
+
+
+
+        try {
+            // Send the transaction
+            const result = await provider.request({
+                method: "eth_sendTransaction",
+                params: [transactionParams],
+            });
+            setResponseLog((prev) => [...prev, `Sent transaction: ${JSON.stringify(result, null, 2)}`]);
+            getValue()
+        } catch (error) {
+            setResponseLog((prev) => [...prev, `Error sending transaction: ${error.message}`]);
+        }
+    };
 
     const decodeHexToNumber = (hexValue) => {
         const cleanedHex = hexValue.replace(/^0x0*/, "");
@@ -47,84 +99,46 @@ function App() {
         try {
             const { wallet, publicClient } = await createClient();
 
-            const calldata = encodeFunctionData({
-                abi: CounterABI.abi,
-                functionName: "getValue",
-                args: [],
-            });
-
             const result = await publicClient.call(
                 {
-                    data: calldata,
+                    abi: CounterABI.abi,
+                    functionName: "getValue",
+                    feeCredit: 50000000n,
                     to: contractAddress,
                 },
                 "latest"
             );
 
-            console.log("Contract Value:", result);
-            setValue(decodeHexToNumber(result.data));
+            // Convert BigInt to string if necessary
+            const resultData = typeof result.data === "bigint" ? result.data.toString() : result.data;
+
+            result.decodedData = decodeHexToNumber(resultData)
+
+            setValue(decodeHexToNumber(resultData));
+            setResponseLog((prev) => [...prev, `Fetched value: ${JSON.stringify(result, null, 2)}`]);
         } catch (error) {
-            console.error("Error calling getValue:", error);
+            setResponseLog((prev) => [...prev, `Error fetching value: ${error.message}`]);
         }
-    };
-
-    const sendMessageToExtension = () => {
-        if (!chrome.runtime) {
-            console.error("Chrome Extension API is not available.");
-            addLog("Error: Chrome Extension API is not available.");
-            return;
-        }
-
-        const calldata = encodeFunctionData({
-            abi: CounterABI.abi,
-            functionName: "increment",
-            args: [],
-        });
-
-        const message = {
-            action: "signAndSend",
-            payload: {
-                to: contractAddress,
-                value: 0,
-                data: calldata,
-            },
-        };
-
-        chrome.runtime.sendMessage(extensionId, message, (response) => {
-            if (chrome.runtime.lastError) {
-                const errorLog = `Error sending message: ${chrome.runtime.lastError.message}`;
-                console.error(errorLog);
-                addLog(errorLog);
-                return;
-            }
-
-            const responseLog = `Response from extension: ${JSON.stringify(response)}`;
-            console.log(responseLog);
-            addLog(responseLog);
-        });
-    };
-
-    const clearLogs = () => {
-        setLogs([]);
     };
 
     return (
         <div className="App">
-            <header className="App-header">
+            <div className="centered">
                 <h1>React Chrome Extension Test (Counter)</h1>
-                <h3>{value}</h3>
-                <button onClick={sendMessageToExtension}>Increment</button>
-                <button onClick={getValue}>Get Value</button>
-                <button onClick={clearLogs}>Clear Logs</button>
-                <div className="log-container">
-                    <h2>Logs:</h2>
-                    <div className="log-box">
-                        {logs.map((log, index) => (
-                            <div key={index}>{log}</div>
-                        ))}
-                    </div>
+                <div className="value-display">{value}</div>
+                <div className="buttons">
+                    <button onClick={sendRequest} disabled={!provider}>
+                        Increase
+                    </button>
+                    <button onClick={getValue}>Get Value</button>
                 </div>
-            </header>
+                <div className="terminal">
+                    <h3>Terminal</h3>
+                    {responseLog.map((log, index) => (
+                        <p key={index}>{log}</p>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

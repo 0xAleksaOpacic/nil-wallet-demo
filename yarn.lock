@@ -1625,30 +1625,32 @@
   dependencies:
     eslint-scope "5.1.1"
 
-"@nilfoundation/niljs@^0.19.1":
-  version "0.19.1"
-  resolved "https://registry.yarnpkg.com/@nilfoundation/niljs/-/niljs-0.19.1.tgz#8814d973c814d5e4ee6dffd9f1c3fa237f5d86e8"
-  integrity sha512-Qp04kV4crJyl0z2DmTCvikJXVzr1GU4gSlLrD5KSmwef3ZmLu4q80qC6guwoi6UwQlNwnXe984PfA7RbTsZJ+g==
+"@nilfoundation/niljs@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@nilfoundation/niljs/-/niljs-0.20.0.tgz#5a84e78c013efbc17a0c65a421f0e98f9b2bdb85"
+  integrity sha512-jKZuDVUsGrZlgBBQITRA7Uzi1F1vpJpvhJAFrePsZ3K95Z/k45asUQMSBbAm1WszUAOl3qRJSEUX0TYRnwY2pA==
   dependencies:
     "@chainsafe/persistent-merkle-tree" "^0.7.2"
     "@chainsafe/ssz" "^0.16.0"
     "@iden3/js-crypto" "^1.1.0"
-    "@nilfoundation/smart-contracts" "^0.1.5"
+    "@nilfoundation/smart-contracts" "0.2.0"
     "@noble/curves" "^1.4.0"
     "@open-rpc/client-js" "^1.8.1"
     "@rollup/plugin-json" "^6.1.0"
     "@scure/bip39" "^1.3.0"
+    "@types/isomorphic-fetch" "^0.0.39"
     abitype "^1.0.2"
     events "^3.3.0"
+    isomorphic-fetch "^3.0.0"
     tiny-invariant "^1.3.3"
     ts-essentials "^10.0.2"
     viem "^2.16.3"
     zod "^3.23.8"
 
-"@nilfoundation/smart-contracts@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@nilfoundation/smart-contracts/-/smart-contracts-0.1.5.tgz#37ab61f549bd3c6ee15b1f231c1db4d89178f52a"
-  integrity sha512-5nL3safIx/+iXbUNBmiFYrB62RnS4xX/6z/MOcPh9tx5jou5VIoalcLyC8w5B/oYFL7s5DzIU0F6Bz29drWqpw==
+"@nilfoundation/smart-contracts@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@nilfoundation/smart-contracts/-/smart-contracts-0.2.0.tgz#436883e83f207b8f1be7c0b164db9919e77d6b8a"
+  integrity sha512-NhdbO7V+h4C6zE0XD1vi2K3oZ2AfnmWcioR8bqXdRFYsTtjpWF0E18bTZ68CS0lL2M3Ude79UC3Lua4JICHk4A==
 
 "@noble/curves@1.6.0", "@noble/curves@~1.6.0":
   version "1.6.0"
@@ -2465,6 +2467,11 @@
   integrity sha512-25g5atgiVNTIv0LBDTg1H74Hvayx0ajtJPLLcYE3whFv75J0pWNtOBzaXJQgDTmrX1bx5U9YC2w/n65BN1HwRQ==
   dependencies:
     "@types/node" "*"
+
+"@types/isomorphic-fetch@^0.0.39":
+  version "0.0.39"
+  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.39.tgz#889573a72ca637bc1a665910a41ff1cb3b52011f"
+  integrity sha512-I0gou/ZdA1vMG7t7gMzL7VYu2xAKU78rW9U1l10MI0nn77pEHq3tQqHQ8hMmXdMpBlkxZOorjI4sO594Z3kKJw==
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.6"
@@ -11399,6 +11406,7 @@ workbox-window@6.6.1:
     workbox-core "6.6.1"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

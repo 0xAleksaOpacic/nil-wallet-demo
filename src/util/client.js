@@ -39,5 +39,7 @@ export async function createClient() {
 		signer,
 	});
 
+	console.log(publicClient)
+
 	return { wallet, publicClient, signer };
 }
