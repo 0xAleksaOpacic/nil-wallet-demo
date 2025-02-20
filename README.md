@@ -1,54 +1,66 @@
-# React Chrome Extension Test (Counter)
 
-This small React app demonstrates how to send and sign transactions with a demo wallet extension.
+# =nil; Wallet Demo App
 
----
+This demo app showcases the integration of the =nil; Wallet for interacting with smart contracts and sending transactions. It demonstrates how to connect a wallet, send transactions, and interact with a deployed smart contract using a smart account.
 
-## Steps to Run
+## 🌟 Features
 
-1. **Clone the repository**
+1. **Wallet Connection:** Connect to the =nil; Wallet using the `eth_requestAccounts` method
+2. **Send Transaction:** Send a transaction with custom parameters
+3. **eth_non_registered:** Demonstrates handling unsupported RPC methods
+4. **Contract Interaction:** Interact with a deployed `Counter` smart contract:
+   - `getValue`: Fetch the current counter value
+   - `increment`: Increment the counter
+
+## 🛠️ Setup
+
+1. **Clone the Repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/0xAleksaOpacic/nil-wallet-demo.git
+   cd nil-wallet-demo
    ```
 
-2. **Install dependencies**
+2. **Install Dependencies:**
    ```bash
    npm install
    ```
 
-3. **Add a `.env` file**
+3. **Set Up Environment Variables:**
 
-   Create a `.env` file in the project root and add the following variables:
+   Create a `.env` file in the root directory:
 
-   ```plaintext
-   REACT_APP_WALLET_ADDRESS=0x00012ca7340e6c09e16fe4ac041d5742b3aa40bc
-   REACT_APP_PRIVATE_KEY=0xbe18c62bc86ea56f38aaffa0a3a532e99e904fa7a1fbcbac294b95a59cf13f37
-   REACT_APP_CONTRACT_ADDRESS=0x0001eea4a881eacdc03263a3f6f02cd3b7932c72
+   ```ini
+   REACT_APP_WALLET_ADDRESS=0x00019dc875b73b5eb509003427b19d90357c573c
+   REACT_APP_PRIVATE_KEY=0x71477e7f6306d3e935daa5bdd8fd73c317a35b4da1da4423ee61c1cd0c1f65f1
+   REACT_APP_CONTRACT_ADDRESS=0x000106ae723795b7c117264057894aedae4bd19b
+   REACT_APP_RPC_ENDPOINT=your_rpc_endpoint_here
    ```
 
-   Additionally, set your own RPC endpoint and the extension ID when deploying the extension locally:
+   - To get an RPC endpoint, use the [NilDevnetTokenBot](https://t.me/NilDevnetTokenBot).
 
-   ```plaintext
-   RPC_ENDPOINT=
-   EXTENSION_ID=
-   ```
-
-2. **Start**
+4. **Start the App:**
    ```bash
    npm start
    ```
+
+## 🔗 Contract Deployment
+
+The app interacts with a deployed `Counter` contract. You can view the contract source code here:
+
+- [Counter.sol](https://github.com/0xAleksaOpacic/nil-wallet-demo/blob/main/src/contract/Counter.sol)
+
+To deploy your own contract, use the [Nil Sandbox](https://explore.nil.foundation/sandbox)
+
+## 🪙 Interacting with the =nil; Wallet
+
+The app interacts with the `window.nil` provider, which is injected by the =nil; Wallet extension. Currently, two methods are supported:
+
+1. **eth_requestAccounts:** Requests user account access
+2. **eth_sendTransaction:** Sends a transaction with specified parameters
+
+Ensure the =nil; Wallet extension is installed and active in your browser
+
+
 ---
 
-## Notice
-
-When you start the page, you might see the following error:
-
-```
-export 'default' (imported as '$') was not found in '@iden3/js-crypto'
-```
-
-You can safely ignore this error and close it.
-
----
-
-Enjoy experimenting with the React Chrome Extension Test!
+⚠️ **Disclaimer:** This project is for educational purposes
