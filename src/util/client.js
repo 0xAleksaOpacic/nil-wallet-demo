@@ -38,7 +38,5 @@ export async function createClient() {
 		signer,
 	});
 
-	console.log(publicClient)
-
 	return { smartAccount, publicClient, signer };
 }
