@@ -1,142 +1,83 @@
-/*global chrome*/
-import React, { useEffect, useState } from "react";
-// Import ABI from the artifacts
-import CounterABI from "./artifacts/Counter.json";
-import { createClient } from "./util/client";
-import { encodeFunctionData } from "viem";
-
-
-// EIP-6963 Event Name Constants
-const EIP6963EventNames = {
-    Request: "eip6963:requestProvider",
-    Announce: "eip6963:announceProvider",
-};
+import React, { useState } from "react";
 
 function App() {
-    const [provider, setProvider] = useState(null);
-    const [value, setValue] = useState(0);
     const [responseLog, setResponseLog] = useState([]);
-    const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 
-    useEffect(() => {
-        const handleProviderAnnounce = (event) => {
-            if (event.detail?.info?.uuid !== "439e2267-7284-40f2-85d3-0393cffc161c") {
-                console.error("Wrong extension:", event.detail.info.name);
-                return;
-            }
+    const logResponse = (message) => {
+        setResponseLog((prev) => [...prev, message]);
+        console.log(message);
+    };
 
-            const { provider } = event.detail;
-            if (!provider) {
-                console.error("No provider received in announce event");
-                return;
-            }
-
-            setProvider(provider);
-        };
-
-        window.addEventListener(EIP6963EventNames.Announce, handleProviderAnnounce);
-
-        return () => {
-            window.removeEventListener(EIP6963EventNames.Announce, handleProviderAnnounce);
-        };
-    }, []);
-
-    useEffect(() => {
-        window.dispatchEvent(
-            new CustomEvent(EIP6963EventNames.Request, {
-                detail: {
-                    name: "Sample Wallet Request",
-                },
-            })
-        );
-    }, []);
-
-    useEffect(() => {
-        getValue()
-    }, []);
-
-    const sendRequest = async () => {
-        if (!provider || !provider.request) {
-            console.error("Provider is not available or doesn't support request method");
+    const requestAccounts = async () => {
+        if (!window.nil || !window.nil.request) {
+            logResponse("❌ Nil Wallet not found.");
             return;
         }
 
-        // Encode calldata for the "increment" function
-        const calldata = encodeFunctionData({
-            abi: CounterABI.abi,
-            functionName: "increment",
-            args: [],
-        });
-
-        // Prepare transaction parameters
-        const transactionParams = {
-            to: contractAddress,  // Replace with your actual contract address
-            value: "0x0",        // Value in hexadecimal format (0 ETH)
-            data: calldata,      // Encoded function call data
-        };
-
-
-
         try {
-            // Send the transaction
-            const result = await provider.request({
-                method: "eth_sendTransaction",
-                params: [transactionParams],
-            });
-            setResponseLog((prev) => [...prev, `Sent transaction: ${JSON.stringify(result, null, 2)}`]);
-            getValue()
+            const accounts = await window.nil.request({ method: "eth_requestAccounts" });
+
+            if (accounts && accounts.length > 0) {
+                logResponse(`✅ Connected: ${accounts[0]}`);
+            } else {
+                logResponse("⚪ No accounts returned. User might have rejected or no wallet available.");
+            }
         } catch (error) {
-            setResponseLog((prev) => [...prev, `Error sending transaction: ${error.message}`]);
+            logResponse(`❌ Error: ${error.message} (Code: ${error.code || "N/A"})`);
         }
     };
 
-    const decodeHexToNumber = (hexValue) => {
-        const cleanedHex = hexValue.replace(/^0x0*/, "");
-        return cleanedHex.toString();
+    const sendTransaction = async () => {
+        if (!window.nil || !window.nil.request) {
+            logResponse("❌ Nil Wallet not found.");
+            return;
+        }
+
+        const tx = {
+            to: "0x000150ca877f809d7095871b791858ad2c9c4372",
+            value: 0.005,
+            tokens: [
+                {id:"0x0001111111111111111111111111111111111114", amount:2}
+            ]
+        };
+
+        try {
+            const txHash = await window.nil.request({
+                method: "eth_sendTransaction",
+                params: [tx],
+            });
+            logResponse(`✅ Transaction sent: ${txHash}`);
+        } catch (error) {
+            logResponse(`❌ Error sending transaction: ${error.message}`);
+        }
     };
 
-    const getValue = async () => {
+    const callRandomFunction = async () => {
+        if (!window.nil || !window.nil.request) {
+            logResponse("❌ Nil Wallet not found.");
+            return;
+        }
+
         try {
-            const { wallet, publicClient } = await createClient();
-
-            const result = await publicClient.call(
-                {
-                    abi: CounterABI.abi,
-                    functionName: "getValue",
-                    feeCredit: 50000000n,
-                    to: contractAddress,
-                },
-                "latest"
-            );
-
-            // Convert BigInt to string if necessary
-            const resultData = typeof result.data === "bigint" ? result.data.toString() : result.data;
-
-            result.decodedData = decodeHexToNumber(resultData)
-
-            setValue(decodeHexToNumber(resultData));
-            setResponseLog((prev) => [...prev, `Fetched value: ${JSON.stringify(result, null, 2)}`]);
+            const result = await window.nil.request({ method: "random_unknown_method", params: [] });
+            console.log(JSON.stringify(result, null, 2))
         } catch (error) {
-            setResponseLog((prev) => [...prev, `Error fetching value: ${error.message}`]);
+            logResponse(`❌ Error calling random function: ${error.message}`);
         }
     };
 
     return (
-        <div className="App">
-            <div className="centered">
-                <h1>React Chrome Extension Test (Counter)</h1>
-                <div className="value-display">{value}</div>
-                <div className="buttons">
-                    <button onClick={sendRequest} disabled={!provider}>
-                        Increase
-                    </button>
-                    <button onClick={getValue}>Get Value</button>
-                </div>
-                <div className="terminal">
-                    <h3>Terminal</h3>
-                    {responseLog.map((log, index) => (
-                        <p key={index}>{log}</p>
-                    ))}
+        <div style={{ textAlign: "center", padding: "20px" }}>
+            <h1>=nil; Wallet Test</h1>
+
+            <button onClick={requestAccounts}>🔑 Request Accounts</button>
+            <button onClick={sendTransaction}>💸 Send Transaction</button>
+            <button onClick={callRandomFunction}>❓ Call Random Function</button>
+
+            <div style={{ marginTop: "20px", textAlign: "left", maxWidth: "500px", margin: "auto" }}>
+                <h3>📝 Logs</h3>
+                <div style={{ background: "#eee", padding: "10px", minHeight: "150px", overflowY: "auto" }}>
+                    {responseLog.length === 0 ? <p>No logs yet.</p> : responseLog.map((log, index) => <p key={index}>{log}</p>)}
                 </div>
             </div>
         </div>

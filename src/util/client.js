@@ -1,9 +1,8 @@
 import {
-	Hex,
 	HttpTransport,
 	LocalECDSAKeySigner,
 	PublicClient,
-	WalletV1,
+	SmartAccountV1,
 } from "@nilfoundation/niljs";
 
 export async function createClient() {
@@ -32,7 +31,7 @@ export async function createClient() {
 
 	const pubkey = await signer.getPublicKey();
 
-	const wallet = new WalletV1({
+	const smartAccount = new SmartAccountV1({
 		pubkey: pubkey,
 		address: walletAddress,
 		client: publicClient,
@@ -41,5 +40,5 @@ export async function createClient() {
 
 	console.log(publicClient)
 
-	return { wallet, publicClient, signer };
+	return { smartAccount, publicClient, signer };
 }

@@ -1,5 +1,5 @@
 contract Counter {
-    uint256 private value; // Stores the current counter value
+    uint256 private value;
 
     // Increments the counter by 1 and emits a ValueChanged event
     function increment() public {
