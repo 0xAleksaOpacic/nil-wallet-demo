@@ -1,70 +1,66 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# =nil; Wallet Demo App
 
-## Available Scripts
+This demo app showcases the integration of the =nil; Wallet for interacting with smart contracts and sending transactions. It demonstrates how to connect a wallet, send transactions, and interact with a deployed smart contract using a smart account.
 
-In the project directory, you can run:
+## 🌟 Features
 
-### `npm start`
+1. **Wallet Connection:** Connect to the =nil; Wallet using the `eth_requestAccounts` method
+2. **Send Transaction:** Send a transaction with custom parameters
+3. **eth_non_registered:** Demonstrates handling unsupported RPC methods
+4. **Contract Interaction:** Interact with a deployed `Counter` smart contract:
+   - `getValue`: Fetch the current counter value
+   - `increment`: Increment the counter
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🛠️ Setup
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/0xAleksaOpacic/nil-wallet-demo.git
+   cd nil-wallet-demo
+   ```
 
-### `npm test`
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. **Set Up Environment Variables:**
 
-### `npm run build`
+   Create a `.env` file in the root directory:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```ini
+   REACT_APP_WALLET_ADDRESS=0x00019dc875b73b5eb509003427b19d90357c573c
+   REACT_APP_PRIVATE_KEY=0x71477e7f6306d3e935daa5bdd8fd73c317a35b4da1da4423ee61c1cd0c1f65f1
+   REACT_APP_CONTRACT_ADDRESS=0x000106ae723795b7c117264057894aedae4bd19b
+   REACT_APP_RPC_ENDPOINT=your_rpc_endpoint_here
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   - To get an RPC endpoint, use the [NilDevnetTokenBot](https://t.me/NilDevnetTokenBot).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. **Start the App:**
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+## 🔗 Contract Deployment
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The app interacts with a deployed `Counter` contract. You can view the contract source code here:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- [Counter.sol](https://github.com/0xAleksaOpacic/nil-wallet-demo/blob/main/src/contract/Counter.sol)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+To deploy your own contract, use the [Nil Sandbox](https://explore.nil.foundation/sandbox)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🪙 Interacting with the =nil; Wallet
 
-## Learn More
+The app interacts with the `window.nil` provider, which is injected by the =nil; Wallet extension. Currently, two methods are supported:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **eth_requestAccounts:** Requests user account access
+2. **eth_sendTransaction:** Sends a transaction with specified parameters
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Ensure the =nil; Wallet extension is installed and active in your browser
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+⚠️ **Disclaimer:** This project is for educational purposes
